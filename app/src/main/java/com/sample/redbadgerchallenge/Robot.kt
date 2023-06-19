@@ -3,10 +3,37 @@ package com.sample.redbadgerchallenge
 class Robot(
     var currX: Int,
     var currY: Int,
-    var currDir: String,
-    val instructions: String,
+    private var currDir: String,
+    private val instructions: String,
 ) {
-    fun turnRight() {
+
+    fun executeInstructions(maxX: Int, maxY: Int, scent: List<Pair<Int, Int>>): String {
+        if (isOutOfBounds(currX, currY, maxX, maxY)) {
+            return "$currX $currY $currDir LOST"
+        }
+        var lost = ""
+        for (instruction in instructions) {
+            when (instruction) {
+                'L' -> {
+                    turnLeft()
+                }
+
+                'R' -> {
+                    turnRight()
+                }
+
+                'F' -> {
+                    if (!goForward(maxX, maxY, scent)) {
+                        lost = "LOST"
+                        break
+                    }
+                }
+            }
+        }
+        return "$currX $currY $currDir $lost".trim()
+    }
+
+    private fun turnRight() {
         when (currDir) {
             "N" -> currDir = "E"
             "E" -> currDir = "S"
@@ -15,7 +42,7 @@ class Robot(
         }
     }
 
-    fun turnLeft() {
+    private fun turnLeft() {
         when (currDir) {
             "N" -> currDir = "W"
             "E" -> currDir = "N"
@@ -25,7 +52,7 @@ class Robot(
     }
 
     //return false if lost
-    fun goForward(maxX: Int, maxY: Int, scent: List<Pair<Int, Int>>): Boolean {
+    private fun goForward(maxX: Int, maxY: Int, scent: List<Pair<Int, Int>>): Boolean {
         when (currDir) {
             "N" -> {
                 return if (isOutOfBounds(currX, currY + 1, maxX, maxY)) {

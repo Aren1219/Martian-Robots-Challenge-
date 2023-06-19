@@ -2,35 +2,19 @@ package com.sample.redbadgerchallenge
 
 class MartianRobots() {
 
-    private val scent = mutableListOf<Pair<Int, Int>>()
+    private val scents = mutableListOf<Pair<Int, Int>>()
 
-    fun executeInstructions(maxX: Int, maxY: Int, vararg robots: Robot): List<String> {
-        val result = mutableListOf<String>()
+    fun solveMartianRobotsProblem(maxX: Int, maxY: Int, vararg robots: Robot): List<String> {
+        val results = mutableListOf<String>()
         for (robot in robots) {
-            var lost = ""
-            for (instruction in robot.instructions) {
-                when (instruction) {
-                    'L' -> {
-                        robot.turnLeft()
-                    }
-
-                    'R' -> {
-                        robot.turnRight()
-                    }
-
-                    'F' -> {
-                        if (!robot.goForward(maxX, maxY, scent)) {
-                            lost = "LOST"
-                            scent.add(Pair(robot.currX, robot.currY))
-                            break
-                        }
-                    }
-                }
+            val result = robot.executeInstructions(maxX, maxY, scents)
+            if (result.contains("LOST")) {
+                scents.add(Pair(robot.currX, robot.currY))
             }
-            result.add("${robot.currX} ${robot.currY} ${robot.currDir} $lost".trim())
+            results.add(result)
         }
-        scent.clear()
-        return result
+        scents.clear()
+        return results
     }
 
 }
